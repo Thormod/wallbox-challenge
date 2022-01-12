@@ -1,0 +1,48 @@
+version: '3.4'
+services:
+  wallbox-api:
+    build:
+      target: base
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NPMRC=${NPMRC}
+    container_name: wallbox-api
+    environment:
+      - TYPEORM_HOST=postgres-service
+      - TYPEORM_PORT=5432
+      - TYPEORM_DB=wallbox
+      - TYPEORM_USER=thor
+      - TYPEORM_PASSWORD=root
+    ports:
+      - '3001:3000'
+      - '9230:9229'
+    depends_on:
+      - postgres-service
+    volumes:
+      - ./:/app
+    links:
+      - postgres-service
+    stop_signal: SIGKILL
+    privileged: true
+    stdin_open: true
+    tty: true
+    command: >
+      sh -c "npm install
+      && npm run start:dev"
+    restart: 'always'
+
+  postgres-service:
+    image: 'postgres:13-alpine'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -p 5432 -U thor -d wallbox']
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=thor
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=wallbox
+    stop_signal: SIGKILL
