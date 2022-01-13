@@ -1,0 +1,32 @@
+module.exports = {
+  transform: {
+    '^.+\\.(t|j)s$': 'ts-jest',
+  },
+  testMatch: [
+    '**/*.test.ts',
+    '!**/test-helpers.js**',
+    '!**/*global-setup*',
+  ],
+  globalSetup: '<rootDir>/test/support/global-setup.ts',
+  globalTeardown: '<rootDir>/test/support/global-teardown.ts',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  verbose: true,
+  collectCoverage: false,
+  reporters: ['default'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/main.ts',
+    '!**/node_modules/**',
+    '!**/src/libraries/**',
+    '!**/test/**',
+    '!**/*test*.ts',
+    '!**/*entity*.ts',
+    '!**/migration/*.ts',
+  ],
+  forceExit: true,
+  notify: true,
+  notifyMode: 'change',
+};

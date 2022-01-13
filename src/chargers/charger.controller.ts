@@ -57,10 +57,17 @@ export class ChargerController {
     return result;
   }
 
+  // @Post('/charger/:serialNumber')
+  // async deleteChargerBySerialNumber(
+  //   @Param('SerialNumber') serialNumber: string
+  // ): Promise<any> {
+  //   console.log('ues', serialNumber)
+  //   return await this.chargerService.deleteChargerBySerialNumber(serialNumber);
+  // }
   @Delete('/charger/:serialNumber')
   async deleteChargerBySerialNumber(
-    @Param('SerialNumber') serialNumber: string
-  ): Promise<Charger> {
-    return await this.chargerService.getChargerByChargerId(serialNumber);
+    @Param('serialNumber') serialNumber: string
+  ) {
+    return await this.chargerService.deleteChargerBySerialNumber(serialNumber);
   }
 }

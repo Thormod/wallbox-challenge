@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({ name: 'charger' })
 export class ChargerModel {
   @PrimaryGeneratedColumn('uuid')
-  serialNumber: string;
+  serial_number: string;
 
   @Column({ name: 'battery_level', type: 'float', nullable: false })
   batteryLevel!: number;
@@ -29,7 +29,7 @@ export class ChargerModel {
   @Column({ name: 'supported_voltage', type: 'float', nullable: false })
   supportedVoltage!: number;
 
-  @Column({ name: 'kW', type: 'float', nullable: false })
+  @Column({ name: 'kw', type: 'float', nullable: false })
   kW!: number;
 
   @Column({ name: 'join_date', type: 'timestamptz', nullable: false })
