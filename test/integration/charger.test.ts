@@ -73,7 +73,7 @@ describe('(Integration) Beacons', () => {
         });
       });
 
-      describe('when getting a specific charger with the GET:/:serialNumber route', () => {
+      describe('when getting an existing charger with the GET:/:serialNumber route', () => {
         test('then a specific charger should be returned', async () => {
           // Arrange
           const currentDate = new Date();
@@ -102,6 +102,21 @@ describe('(Integration) Beacons', () => {
           // Assert
           expect(getResponse.status).toBe(StatusCodes.OK);
           expect(getResponse.data).toStrictEqual(chargerToAdd);
+        });
+      });
+
+      describe('when getting an unknown charger with the GET:/:serialNumber route', () => {
+        test('then a 404 error is thrown', async () => {
+          // Arrange
+          const chargerSerialNumber = uuidv4();
+
+          // Act
+          const getResponse = await axios.get(
+            `/charger/${chargerSerialNumber}`
+          );
+
+          // Assert
+          expect(getResponse.status).toBe(StatusCodes.NOT_FOUND);
         });
       });
     });
@@ -156,7 +171,7 @@ describe('(Integration) Beacons', () => {
     });
 
     describe('PUT', () => {
-      describe('when updating charger with the PUT:/:serialNumber route', () => {
+      describe('when updating an existing charger with the PUT:/:serialNumber route', () => {
         test('then a the specific charger is updated', async () => {
           // Arrange
           const currentDate = new Date();
@@ -210,10 +225,26 @@ describe('(Integration) Beacons', () => {
           expect(getResponse.data).toStrictEqual(expectedCharger);
         });
       });
+
+      describe('when updating an unknow charger with the PUT:/:serialNumber route', () => {
+        test('then a 404 error is thrown', async () => {
+          // Arrange
+          const chargerSerialNumber = uuidv4();
+
+          // Act
+          const putResponse = await axios.put(
+            `/charger/${chargerSerialNumber}`,
+            {}
+          );
+
+          // Assert
+          expect(putResponse.status).toBe(StatusCodes.NOT_FOUND);
+        });
+      });
     });
 
     describe('DELETE', () => {
-      describe('when deleting a specific charger with the DELETE:/:serialNumber route', () => {
+      describe('when deleting an existing charger with the DELETE:/:serialNumber route', () => {
         test('then the charger should not be included', async () => {
           // Arrange
           const currentDate = new Date();
