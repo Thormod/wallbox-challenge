@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ChargerModel } from './charger.model';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +12,7 @@ export class ChargerService {
   ) {}
 
   async getChargers(): Promise<ChargerModel[] | null> {
+    console.log('About to fetch all Chargers');
     const results = await this.chargerRepository.find();
     return results;
   }
@@ -22,12 +23,12 @@ export class ChargerService {
     console.log(`About to fetch Charger with id: ${chargerSerialNumber}`);
     const result = await this.chargerRepository.findOne({
       where: {
-        serialNumber: chargerSerialNumber,
+        serial_number: chargerSerialNumber,
       },
     });
 
     if (!result) {
-      throw new Error('Charger-by-id-not-found');
+      throw new NotFoundException('Charger Not Found');
     }
 
     return result;
@@ -40,25 +41,43 @@ export class ChargerService {
     return result;
   }
 
-  async updateCharger(serialNumber: string, charger: Charger): Promise<ChargerModel> {
+  async updateCharger(
+    serialNumber: string,
+    charger: Charger
+  ): Promise<ChargerModel> {
     const requiredCharger = await this.chargerRepository.findOne({
       where: {
-        serialNumber: serialNumber,
+        serial_number: serialNumber,
       },
     });
+
+    if (!requiredCharger) {
+      throw new NotFoundException('Charger Not Found');
+    }
+
     this.chargerRepository.merge(requiredCharger, charger);
     const result = await this.chargerRepository.save(requiredCharger);
+
     return result;
   }
 
   async deleteChargerBySerialNumber(chargerSerialNumber: string) {
-    const result = await this.chargerRepository.delete(chargerSerialNumber);
+    console.log(`About to delete Charger with id: ${chargerSerialNumber}`);
+
+    const result = await this.chargerRepository.delete({
+      serial_number: chargerSerialNumber,
+    });
+
+    if (!result) {
+      throw new NotFoundException('Charger Not Found');
+    }
+
     return result;
   }
 
   convertModelToEntity(chargerModel: ChargerModel): Charger {
     return {
-      serialNumber: chargerModel.serialNumber,
+      serialNumber: chargerModel.serial_number,
       batteryLevel: chargerModel.batteryLevel,
       model: chargerModel.model,
       batteryType: chargerModel.batteryType,
