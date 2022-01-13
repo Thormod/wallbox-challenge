@@ -7,7 +7,6 @@ import util from 'util';
 import * as dockerCompose from 'docker-compose';
 import isPortReachable from 'is-port-reachable';
 import { waitForPostgres } from '../test-helpers';
-import isCI from 'is-ci';
 
 export default async function setup(): Promise<void> {
   await isPortReachable(5432);

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ChargerModel } from './charger.model';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -61,6 +61,7 @@ export class ChargerService {
     return result;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async deleteChargerBySerialNumber(chargerSerialNumber: string) {
     console.log(`About to delete Charger with id: ${chargerSerialNumber}`);
 

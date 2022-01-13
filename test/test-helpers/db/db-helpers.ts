@@ -64,18 +64,8 @@ export async function waitForPostgres(
 }
 
 export async function createCharger(
-  charger
-  // serialNumber: string,
-  // batteryLevel: number,
-  // model: string,
-  // batteryType: string,
-  // injection: string,
-  // protectionRating: string,
-  // communicationProtocol: string,
-  // internetConnection: boolean,
-  // supportedVoltage: number,
-  // kW: number,
-  // joinDate: string
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  charger: any
 ): Promise<void> {
   const client = createClient();
   await client.connect();
