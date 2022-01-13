@@ -57,13 +57,7 @@ export class ChargerController {
     return result;
   }
 
-  // @Post('/charger/:serialNumber')
-  // async deleteChargerBySerialNumber(
-  //   @Param('SerialNumber') serialNumber: string
-  // ): Promise<any> {
-  //   console.log('ues', serialNumber)
-  //   return await this.chargerService.deleteChargerBySerialNumber(serialNumber);
-  // }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   @Delete('/charger/:serialNumber')
   async deleteChargerBySerialNumber(
     @Param('serialNumber') serialNumber: string

@@ -3,7 +3,7 @@ import { closeServer, startServer } from '../../src/server';
 import { getAxiosInstance } from '../test-helpers';
 import { createCharger } from '../test-helpers/db/db-helpers';
 import { v4 as uuidv4 } from 'uuid';
-const sinon = require('sinon');
+import sinon from 'sinon';
 
 let axios;
 
@@ -14,6 +14,7 @@ describe('(Integration) Beacons', () => {
   });
 
   afterAll(async () => {
+    // eslint-disable-next-line import/no-named-as-default-member
     sinon.restore();
     await closeServer();
   });
@@ -128,6 +129,7 @@ describe('(Integration) Beacons', () => {
         let clock;
 
         beforeEach(() => {
+          // eslint-disable-next-line import/no-named-as-default-member
           clock = sinon.useFakeTimers(currentDate.getTime());
         });
 

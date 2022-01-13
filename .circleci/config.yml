@@ -69,9 +69,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/wallbox
-      - run:
-          name: Login Docker
-          command: docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
       - node/install:
           install-yarn: false
           node-version: 14.16.1
