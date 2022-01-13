@@ -26,7 +26,9 @@
     "db:migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
     "db:migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert",
     "db:migrate": "npm run typeorm -- migration:run",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "license:check": "npx license-checker --summary --failOn GPL",
+    "audit:ci": "audit-ci -m-prod"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
@@ -72,6 +74,7 @@
     "is-ci": "^3.0.1",
     "is-port-reachable": "^3.0.0",
     "jest": "^26.4.2",
+    "license-checker": "^25.0.1",
     "npm": "^6.14.8",
     "prettier": "^1.19.1",
     "semantic-release": "^18.0.1",

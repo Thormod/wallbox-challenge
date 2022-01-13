@@ -1,0 +1,123 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+  gitleaks: upenn-libraries/gitleaks@1.0.0
+
+executors:
+  node-docker-executor:
+    docker:
+      - image: cimg/node:14.16.1
+
+jobs:
+  install:
+    executor: node-docker-executor
+    working_directory: /home/circleci/wallbox
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - persist_to_workspace:
+          root: /home/circleci/wallbox
+          paths:
+            - node_modules
+
+  build:
+    executor: node-docker-executor
+    working_directory: /home/circleci/wallbox
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/wallbox
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: /home/circleci/wallbox
+          paths:
+            - dist
+
+  lint-license-security-checks:
+    executor: node-docker-executor
+    working_directory: /home/circleci/wallbox
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/wallbox
+      - run:
+          name: Commit Lint
+          command: npm run lint:commit
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Security Audit
+          command: npm run audit:ci
+      - run:
+          name: License Checks
+          command: npm run license:check
+
+  tests:
+    machine: true
+    working_directory: /home/circleci/wallbox
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/wallbox
+      - run:
+          name: Login Docker
+          command: docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD
+      - node/install:
+          install-yarn: false
+          node-version: 14.16.1
+      - run:
+          name: Run Unit Tests & Integration Tests
+          command: npm run test:cov -- --silent
+
+  build-artifact:
+    docker:
+      - image: cimg/node:17.2.0
+    working_directory: /home/circleci/wallbox
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/wallbox
+      - run:
+          name: Generate and Release version
+          command: npm run semantic-release
+      - run:
+          name: docker build, versioning and push
+          command: |
+            git fetch
+            export GIT_VERSION=$(git describe --abbrev=0 --tags)
+            echo "GIT_VERSION: $GIT_VERSION"
+            docker build -t aument-images/compass-service:$GIT_VERSION .
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - install
+      - build:
+          requires:
+            - install
+      - lint-license-security-checks:
+          requires:
+            - install
+      - tests:
+          requires:
+            - build
+      - build-artifact:
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - lint-license-security-checks
+            - tests
