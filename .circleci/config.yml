@@ -114,6 +114,8 @@ workflows:
             branches:
               only:
                 - main
+          context:
+            - github
           requires:
             - lint-license-security-checks
             - tests
