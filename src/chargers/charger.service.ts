@@ -68,10 +68,6 @@ export class ChargerService {
       serial_number: chargerSerialNumber,
     });
 
-    if (!result) {
-      throw new NotFoundException('Charger Not Found');
-    }
-
     return result;
   }
 
